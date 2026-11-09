@@ -1,0 +1,50 @@
+app:
+  port: ${APP_PORT:8094}
+  logging: debug
+  consul:
+    host: consul-service
+    port: 8500
+
+server:
+  port: ${app.port}
+
+spring:
+  cache:
+    caffeine:
+      spec: initialCapacity=50,maximumSize=500,expireAfterAccess=600s
+  application:
+    name: haberes-etec-service
+  cloud:
+    consul:
+      host: ${app.consul.host}
+      port: ${app.consul.port}
+      discovery:
+        prefer-ip-address: true
+        # Solo resolver instancias con los checks en passing (Feign/LoadBalancer).
+        query-passing: true
+        # Consul: readiness (sin dependencias) + poda si queda critico.
+        health-check-path: /actuator/health/readiness
+        health-check-critical-timeout: 5m
+        tags: haberes,etec
+
+logging:
+  level:
+    um.haberes.etec: ${app.logging}
+    web: ${app.logging}
+    org:
+      hibernate:
+        SQL: ${app.logging}
+      springframework.cloud.config: ${app.logging}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      # readiness/liveness explicitos: Consul consulta /actuator/health/readiness.
+      probes:
+        enabled: true
+      show-details: never
+
