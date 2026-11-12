@@ -1,0 +1,21 @@
+flowchart TD
+    PR["Pull request a main / develop / staging"] --> VER0["mvn -B verify"]
+    DEV["Push a develop"] --> VER1["mvn -B verify"]
+    STG["Push a staging"] --> VER2["mvn -B verify"]
+    MAIN["Push a main"] --> VER3["mvn -B verify + SonarCloud"]
+
+    VER1 --> IMG1["docker build y push<br/>imagen develop:sha"]
+    VER2 --> IMG2["docker build y push<br/>imagen staging:sha"]
+    VER3 --> IMG3["docker build y push<br/>imagen version / latest"]
+
+    IMG1 --> DEP1["deploy develop<br/>runner self-hosted develop"]
+    IMG2 --> DEP2["deploy staging y staging-new<br/>runners self-hosted"]
+    IMG3 --> HUB[("Docker Hub")]
+
+    DEP1 --> APP["haberes-etec-service<br/>puerto 8094"]
+    DEP2 --> APP
+    APP -->|"health readiness"| CONSUL[("consul-service:8500")]
+    APP -->|"OpenFeign"| CORE["haberes-core-service"]
+
+    VER0 --> DOCS["docs: GitHub Pages y wiki"]
+    MAIN --> DOCS
