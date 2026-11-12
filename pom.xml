@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ar.edu</groupId>
 	<artifactId>um.haberes.etec-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>UM.haberes.etec-service</name>
 	<description>UM.haberes.etec-service</description>
 	<url/>
@@ -67,6 +67,15 @@
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-hc5</artifactId>
 		</dependency>
 
 		<dependency>

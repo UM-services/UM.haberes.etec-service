@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph CLIENTES["Clientes"]
+        UI["UI / API Gateway"]
+    end
+
+    subgraph ETEC["haberes-etec-service"]
+        WEB["Controllers<br/>cargo · asignacion-cargo · cargo-liquidacion"]
+        APP["Services<br/>reglas de negocio ETEC"]
+        ERR["EtecExceptionHandler<br/>ProblemDetail 400 / 409"]
+        AUDIT["FeignAuditActorConfig<br/>X-Usuario-Legajo"]
+        FEIGN["Clientes Feign<br/>coreCategoria · coreControl<br/>coreEtecAsignacionCargo · coreCargoLiquidacion"]
+    end
+
+    subgraph CORE["haberes-core-service"]
+        API["API REST /api/haberes/core/**"]
+        TABLAS[("etec_asignacion_cargo<br/>categoria · cargo_liquidacion")]
+    end
+
+    CONSUL[("Consul<br/>consul-service:8500")]
+
+    UI -->|"HTTP /api/haberes/etec/**"| WEB
+    WEB --> APP
+    APP --> FEIGN
+    WEB --- ERR
+    FEIGN --- AUDIT
+    FEIGN -->|"OpenFeign + HC5"| API
+    API --- TABLAS
+    ETEC -.->|"registro y health readiness"| CONSUL
+    FEIGN -.->|"service discovery"| CONSUL
