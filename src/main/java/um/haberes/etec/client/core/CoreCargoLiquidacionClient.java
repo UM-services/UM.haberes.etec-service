@@ -28,4 +28,18 @@ public interface CoreCargoLiquidacionClient {
     @PostMapping("/api/haberes/core/cargoliquidacion/reemplazar/legajo/{legajoId}/{anho}/{mes}")
     List<CargoLiquidacionDto> replaceByLegajo(@RequestBody ReemplazoCargosRequestDto request,
             @PathVariable Long legajoId, @PathVariable Integer anho, @PathVariable Integer mes);
+
+    @GetMapping("/api/haberes/core/cargoliquidacion/generacion/preview/etec/legajo/{legajoId}/{anho}/{mes}")
+    List<CargoLiquidacionDto> previewEtecByLegajo(@PathVariable Long legajoId, @PathVariable Integer anho,
+            @PathVariable Integer mes);
+
+    @GetMapping("/api/haberes/core/cargoliquidacion/generacion/preview/etec/periodo/{anho}/{mes}")
+    List<CargoLiquidacionDto> previewEtecByPeriodo(@PathVariable Integer anho, @PathVariable Integer mes);
+
+    @PostMapping("/api/haberes/core/cargoliquidacion/generacion/etec/legajo/{legajoId}/{anho}/{mes}")
+    List<CargoLiquidacionDto> generarEtecByLegajo(@PathVariable Long legajoId, @PathVariable Integer anho,
+            @PathVariable Integer mes);
+
+    @PostMapping("/api/haberes/core/cargoliquidacion/generacion/etec/periodo/{anho}/{mes}")
+    List<CargoLiquidacionDto> generarEtecByPeriodo(@PathVariable Integer anho, @PathVariable Integer mes);
 }

@@ -6,8 +6,9 @@ Guía para agentes que trabajen en este repositorio. Aplica a todo el proyecto.
 
 Microservicio Spring Boot del sistema de haberes para el tenant **ETEC**
 (`haberes-etec-service`, puerto `8094`). **No accede a base de datos y no tiene JPA**:
-las reglas de negocio viven acá y la persistencia la ejecuta `haberes-core-service`
-a través de OpenFeign. No introduzcas entidades, repositorios ni migraciones.
+las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
+liquidación— la ejecuta `haberes-core-service` a través de OpenFeign. No introduzcas
+entidades, repositorios ni migraciones.
 
 Base de los endpoints propios: `/api/haberes/etec/**`.
 Base de los endpoints de core: `/api/haberes/core/**`.
@@ -61,18 +62,18 @@ src/main/java/um/haberes/etec/
 - **Cargo ETEC**: es una categoría de core con `puntos > 0` y `docente = 1`. El alta
   toma el próximo `categoriaId` (desde `9000` si no hay categorías) y persiste
   `basico = 0`, `noDocente = 0`, `liquidaPorHora = 0`, porque el importe se calcula
-  como `puntos × valor del punto`. La baja se rechaza si la categoría ya tiene
-  asignaciones.
+  como `puntos × valor del punto + monto fijo`. La baja se rechaza si la categoría ya
+  tiene asignaciones.
 - **Asignación**: valida que el cargo sea ETEC, que `fechaBaja` no sea anterior a
   `fechaAlta` y que no haya solape con otra asignación del mismo legajo y categoría
   (el propio registro se excluye al editar).
-- **Liquidación**: `categoriaBasico = puntos del cargo × valorPuntoEtec` del período,
-  con `BigDecimal`, escala 2 y `RoundingMode.HALF_UP`. Nunca uses `double`.
-  Fechas del período con `PeriodoUtils.firstDay/lastDay` (UTC).
-- La generación **reemplaza** el período o el legajo completo en core para ser
-  idempotente. `preview` no debe escribir en core.
-- Falla con `400` si el período no tiene `valorPuntoEtec > 0` o si no hay cargos ETEC
-  con puntos configurados.
+- **Liquidación**: `categoriaBasico = puntos del cargo × valorPuntoEtec + montoFijoCargo`
+  del período lo calcula `haberes-core-service`, con `BigDecimal`, escala 2 y
+  `RoundingMode.HALF_UP`; este servicio valida y delega. Nunca uses `double`.
+- La generación del servicio delega en core, que **reemplaza** el período o el legajo
+  completo para ser idempotente. `preview` no debe escribir en core.
+- Falla con `400` si el período no tiene `valorPuntoEtec > 0` en `control_etec` o si no
+  hay cargos ETEC con puntos configurados.
 
 ## Convenciones de código
 

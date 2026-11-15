@@ -12,10 +12,10 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)
 
 Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de datos:
-las reglas de negocio viven acá y la persistencia la realiza `haberes-core-service`
-a través de OpenFeign.
+las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
+liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.1.0` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.2.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -28,14 +28,17 @@ Versión actual: `0.1.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 - **Cargos ETEC**: catálogo de cargos con puntos sobre categorías de haberes-core
   (`puntos > 0`, `docente = 1`). El alta toma el próximo `categoriaId` desde `9000`
-  y deja `basico = 0`, porque el importe se calcula como `puntos × valor del punto`.
+  y deja `basico = 0`, porque el importe se calcula como `puntos × valor del punto +
+  monto fijo`.
 - **Asignación de cargos**: vínculo legajo–cargo con fecha de alta/baja. Valida que el
   cargo sea ETEC, que las fechas sean coherentes y que no haya solape con otra
   asignación vigente del mismo cargo.
 - **Liquidación de cargos por puntos**: `preview` y generación de `cargo_liquidacion`
-  por período o por legajo, con `categoriaBasico = puntos × valor del punto ETEC` del
-  período. La generación reemplaza el período/legajo en core, por lo que es
-  idempotente.
+  por período o por legajo delegan en `haberes-core-service`, que aplica
+  `categoriaBasico = puntos × valor del punto + monto fijo` con los parámetros de
+  `control_etec` y el reemplazo idempotente del legajo/período. Este servicio valida
+  contra `GET /api/haberes/core/etec/control/{anho}/{mes}/opcional` y conserva el
+  contrato (`400` si no hay cargos con puntos, control ETEC o valor del punto).
 - **Auditoría**: las llamadas Feign propagan `X-Usuario-Legajo` y
   `X-Legajo-Solicitante` para que core registre el actor en las escrituras.
 - **Errores**: `ProblemDetail` con `400` de validación, `409` de conflicto y el status

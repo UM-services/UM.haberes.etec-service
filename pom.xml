@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ar.edu</groupId>
 	<artifactId>um.haberes.etec-service</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<name>UM.haberes.etec-service</name>
 	<description>UM.haberes.etec-service</description>
 	<url/>

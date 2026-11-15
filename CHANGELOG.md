@@ -4,6 +4,25 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.2.0] - 2026-11-15
+
+Segunda versión: la liquidación ETEC por puntos pasa a resolverla
+`haberes-core-service`, dueño de la tabla y de la transacción, y este servicio
+conserva las validaciones de negocio y la delegación.
+
+### Cambiado
+
+- `GeneracionCargoLiquidacionService` deja de calcular `puntos × valor` y de escribir `cargo_liquidacion`: `preview` y `generar` delegan en `POST /api/haberes/core/cargoliquidacion/generacion/etec/legajo/{legajoId}/{anho}/{mes}`, `POST .../etec/periodo/{anho}/{mes}`, `GET .../preview/etec/legajo/{legajoId}/{anho}/{mes}` y `GET .../preview/etec/periodo/{anho}/{mes}`. Core resuelve las asignaciones vigentes, el valor del punto, el monto fijo y el reemplazo idempotente del legajo/período. Se mantienen las rutas públicas de `/api/haberes/etec/cargo-liquidacion`, el `400` cuando no hay cargos con puntos configurados y el filtro de `findBy*` a las categorías con puntos.
+- `GeneracionCargoLiquidacionService.validarPeriodo` deja de leer `control.valorPuntoEtec`: consulta el control propio del circuito por puntos en `GET /api/haberes/core/etec/control/{anho}/{mes}/opcional` con el nuevo `CoreControlEtecClient` y `ControlEtecDto`. Si el período no tiene control ETEC o el valor del punto no es mayor a cero responde el mismo `400` de negocio. Se eliminan `CoreControlClient` y `ControlDto`, que quedaban sin uso.
+- `CoreCargoLiquidacionClient` suma `previewEtecByLegajo`, `previewEtecByPeriodo`, `generarEtecByLegajo` y `generarEtecByPeriodo`, y conserva `findByLegajo`, `findByPeriodo`, `replaceByPeriodo` y `replaceByLegajo`.
+- `GeneracionCargoLiquidacionServiceTest` se reescribe para verificar la delegación en core, el mapeo de `CargoLiquidacionDto` a `CargoLiquidacionRequestDto`, la lectura del control ETEC opcional (período configurado y período sin valor de punto) y las dos validaciones de `400`.
+
+### Documentación
+
+- `README.md`: la liquidación documenta que `categoriaBasico = puntos × valor del punto + monto fijo` con los parámetros de `control_etec` y que la persistencia vive en core.
+- `docs/diagrams/arquitectura-general.mmd`: el cliente Feign `coreControl` pasa a `coreControlEtec` y el diagrama incorpora `control_etec` entre las tablas de core.
+- `AGENTS.md`: la regla de liquidación refleja que el cálculo y el reemplazo del período/legajo los ejecuta `haberes-core-service`.
+
 ## [0.1.0] - 2026-11-12
 
 Primera versión funcional del servicio: cargos ETEC con puntos, asignación de
