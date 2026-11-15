@@ -10,13 +10,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Parámetros propios del circuito ETEC por puntos. El valor del punto vive en
+ * {@code control_etec} de haberes-core.
+ */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ControlDto {
+public class ControlEtecDto {
 
     private Integer anho;
 

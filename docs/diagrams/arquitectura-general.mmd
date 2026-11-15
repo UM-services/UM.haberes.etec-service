@@ -5,15 +5,15 @@ flowchart LR
 
     subgraph ETEC["haberes-etec-service"]
         WEB["Controllers<br/>cargo · asignacion-cargo · cargo-liquidacion"]
-        APP["Services<br/>reglas de negocio ETEC"]
+        APP["Services<br/>validaciones ETEC<br/>delegación del cálculo en core"]
         ERR["EtecExceptionHandler<br/>ProblemDetail 400 / 409"]
         AUDIT["FeignAuditActorConfig<br/>X-Usuario-Legajo"]
-        FEIGN["Clientes Feign<br/>coreCategoria · coreControl<br/>coreEtecAsignacionCargo · coreCargoLiquidacion"]
+        FEIGN["Clientes Feign<br/>coreCategoria · coreControlEtec<br/>coreEtecAsignacionCargo · coreCargoLiquidacion"]
     end
 
     subgraph CORE["haberes-core-service"]
         API["API REST /api/haberes/core/**"]
-        TABLAS[("etec_asignacion_cargo<br/>categoria · cargo_liquidacion")]
+        TABLAS[("control_etec · etec_asignacion_cargo<br/>categoria · cargo_liquidacion")]
     end
 
     CONSUL[("Consul<br/>consul-service:8500")]
