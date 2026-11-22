@@ -43,6 +43,9 @@ src/main/java/um/haberes/etec/
 ├── cargo/                  # catálogo de cargos ETEC (categorías con puntos)
 ├── asignacion_cargo/       # vínculo legajo–cargo
 ├── generacion/             # preview y generación de cargo_liquidacion
+├── presentismo/            # pérdida de presentismo por asignación (proxy de core)
+├── presentismo_horas/      # pérdida de presentismo por horas (proxy de core)
+├── control/                # control ETEC del período (proxy de core)
 ├── client/core/            # @FeignClient hacia haberes-core + dto/
 └── shared/
     ├── audit/              # propagación del actor de auditoría
@@ -74,6 +77,9 @@ src/main/java/um/haberes/etec/
   completo para ser idempotente. `preview` no debe escribir en core.
 - Falla con `400` si el período no tiene `valorPuntoEtec > 0` en `control_etec` o si no
   hay cargos ETEC con puntos configurados.
+- **Presentismo** (por asignación y por horas): el CRUD y las validaciones viven en
+  `haberes-core-service`; este servicio sólo mapea los requests del frontend y delega.
+  No agregues reglas de negocio ni persistencia de presentismo acá.
 
 ## Convenciones de código
 
