@@ -15,7 +15,7 @@ Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de dat
 las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
 liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.2.0` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.3.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -39,10 +39,22 @@ Versión actual: `0.2.0` (ver [CHANGELOG.md](CHANGELOG.md)).
   `control_etec` y el reemplazo idempotente del legajo/período. Este servicio valida
   contra `GET /api/haberes/core/etec/control/{anho}/{mes}/opcional` y conserva el
   contrato (`400` si no hay cargos con puntos, control ETEC o valor del punto).
+- **Presentismo**: pérdida de presentismo por asignación de cargo (`/presentismo`)
+  con consultas por legajo y período, por período y por asignación, más alta,
+  edición del motivo y baja. El CRUD y las validaciones viven en
+  `haberes-core-service`; este servicio expone el circuito ETEC y mapea los
+  requests propios a los DTO de core.
+- **Presentismo por horas** (`/presentismo-horas`): estado del legajo en el período
+  (`tieneCargosHoras`), listado por período y CRUD con motivo, delegados en core de
+  la misma forma que el presentismo por asignación.
+- **Control ETEC del período**: `GET /control/{anho}/{mes}/opcional` expone el
+  control que persiste core, con `200` sin cuerpo cuando el período todavía no está
+  configurado.
 - **Auditoría**: las llamadas Feign propagan `X-Usuario-Legajo` y
   `X-Legajo-Solicitante` para que core registre el actor en las escrituras.
 - **Errores**: `ProblemDetail` con `400` de validación, `409` de conflicto y el status
-  devuelto por core (`FeignException`).
+  devuelto por core (`FeignException`); si core responde un cuerpo JSON, se usa
+  `detail`, `message` o `error` como detalle.
 
 ## Endpoints
 
@@ -80,6 +92,35 @@ Todas las rutas cuelgan de `/api/haberes/etec`.
 | GET | `/cargo-liquidacion/preview/legajo/{legajoId}/{anho}/{mes}` | Previsualiza el legajo sin persistir |
 | GET | `/cargo-liquidacion/legajo/{legajoId}/{anho}/{mes}` | Liquidación registrada del legajo |
 | GET | `/cargo-liquidacion/periodo/{anho}/{mes}` | Liquidación registrada del período |
+
+### Presentismo (`/presentismo`)
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/presentismo/legajo/{legajoId}/periodo/{anho}/{mes}` | Presentismos del legajo en el período |
+| GET | `/presentismo/periodo/{anho}/{mes}` | Presentismos del período |
+| GET | `/presentismo/asignacion/{asignacionCargoId}/periodo/{anho}/{mes}` | Presentismo de la asignación en el período |
+| GET | `/presentismo/{presentismoId}` | Obtiene un presentismo |
+| POST | `/presentismo/` | Registra la pérdida de presentismo |
+| PUT | `/presentismo/{presentismoId}` | Actualiza el motivo |
+| DELETE | `/presentismo/{presentismoId}` | Elimina el registro (`204`) |
+
+### Presentismo por horas (`/presentismo-horas`)
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/presentismo-horas/legajo/{legajoId}/periodo/{anho}/{mes}` | Estado del legajo en el período (`tieneCargosHoras`) |
+| GET | `/presentismo-horas/periodo/{anho}/{mes}` | Presentismos por horas del período |
+| GET | `/presentismo-horas/{presentismoHorasId}` | Obtiene un presentismo por horas |
+| POST | `/presentismo-horas/` | Registra la pérdida de presentismo por horas |
+| PUT | `/presentismo-horas/{presentismoHorasId}` | Actualiza el motivo |
+| DELETE | `/presentismo-horas/{presentismoHorasId}` | Elimina el registro (`204`) |
+
+### Control ETEC (`/control`)
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/control/{anho}/{mes}/opcional` | Control ETEC del período; `200` sin cuerpo si no está configurado |
 
 ## Requisitos
 

@@ -4,6 +4,31 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.3.0] - 2026-11-22
+
+Tercera versión: el circuito ETEC suma la pérdida de presentismo por asignación y
+por horas, y expone el control ETEC del período. El CRUD y las validaciones siguen
+viviendo en `haberes-core-service`; este servicio valida los requests propios y
+delega por OpenFeign.
+
+### Agregado
+
+- Pérdida de presentismo por asignación (`/api/haberes/etec/presentismo`): consultas por legajo y período, por período, por asignación y período y por id; alta con `asignacionCargoId`, `anho`, `mes` y `motivo`; edición del `motivo`; y baja con `204`. Delega en el nuevo `CoreEtecPresentismoClient` (`/api/haberes/core/etec/presentismo/**`), dueño del CRUD y de las validaciones; `EtecPresentismoDto` devuelve además los datos de legajo, categoría, dependencia y persona.
+- Pérdida de presentismo por horas (`/api/haberes/etec/presentismo-horas`): estado del legajo en el período (`tieneCargosHoras`), listado por período, consulta por id, alta con `legajoId`, `anho`, `mes` y `motivo`, edición del `motivo` y baja con `204`. Delega en el nuevo `CoreEtecPresentismoHorasClient`.
+- Control ETEC del período (`GET /api/haberes/etec/control/{anho}/{mes}/opcional`): proxy de `CoreControlEtecClient` para que el frontend ETEC no llame directo a core; conserva el `200` sin cuerpo cuando el período no está configurado.
+- `banner.txt`: banner ASCII del servicio al arrancar.
+- Tests unitarios `PresentismoEtecServiceTest` y `PresentismoHorasEtecServiceTest`, que verifican la delegación en core y el mapeo de los requests del frontend a los DTO de core (`create`, `update` y `delete`).
+
+### Cambiado
+
+- `EtecExceptionHandler`: cuando core rechaza una escritura, extrae `detail`, `message` o `error` del cuerpo JSON antes de armar el `ProblemDetail`, en lugar de exponer el JSON crudo; si el cuerpo no es JSON o viene vacío, mantiene el comportamiento anterior.
+- `pom.xml`: versión del proyecto `0.2.0` → `0.3.0`.
+
+### Documentación
+
+- `README.md`: funcionalidad y tablas de endpoints de presentismo, presentismo por horas y control ETEC; el detalle de errores de core documenta la extracción del mensaje JSON.
+- `docs/diagrams/arquitectura-general.mmd`: los controllers y clientes Feign del diagrama incluyen presentismo, presentismo por horas y control ETEC.
+
 ## [0.2.0] - 2026-11-15
 
 Segunda versión: la liquidación ETEC por puntos pasa a resolverla
