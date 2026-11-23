@@ -32,6 +32,11 @@ public class CargoEtecService {
         return categoriaClient.findConPuntos();
     }
 
+    /** Catálogo de cargos ETEC con los puntos vigentes en el período. */
+    public List<CategoriaDto> findAll(Integer anho, Integer mes) {
+        return categoriaClient.findConPuntosPorPeriodo(anho, mes);
+    }
+
     public CategoriaDto findById(Integer categoriaId) {
         return validarCargoEtec(categoriaClient.findById(categoriaId));
     }
