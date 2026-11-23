@@ -31,6 +31,12 @@ public class CargoEtecController {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @GetMapping("/{anho}/{mes}")
+    public ResponseEntity<List<CategoriaDto>> findAllByPeriodo(@PathVariable Integer anho,
+            @PathVariable Integer mes) {
+        return ResponseEntity.ok(service.findAll(anho, mes));
+    }
+
     @GetMapping("/{categoriaId}")
     public ResponseEntity<CategoriaDto> findById(@PathVariable Integer categoriaId) {
         return ResponseEntity.ok(service.findById(categoriaId));

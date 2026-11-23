@@ -19,6 +19,9 @@ public interface CoreCategoriaClient {
     @GetMapping("/api/haberes/core/categoria/puntos")
     List<CategoriaDto> findConPuntos();
 
+    @GetMapping("/api/haberes/core/categoria/puntos/{anho}/{mes}")
+    List<CategoriaDto> findConPuntosPorPeriodo(@PathVariable Integer anho, @PathVariable Integer mes);
+
     @GetMapping("/api/haberes/core/categoria/last")
     CategoriaDto findLast();
 

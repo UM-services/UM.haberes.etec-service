@@ -4,6 +4,28 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.0] - 2026-11-23
+
+Cuarta versión: el catálogo y la generación ETEC resuelven los puntos del período.
+
+### Agregado
+
+- `GET /api/haberes/etec/cargo/{anho}/{mes}`: catálogo de cargos ETEC con los puntos vigentes en el período. Delega en `GET /api/haberes/core/categoria/puntos/{anho}/{mes}` mediante `CoreCategoriaClient.findConPuntosPorPeriodo`.
+- `CargoEtecService.findAll(anho, mes)`, que expone el catálogo por período; `findAll()` conserva la plantilla actual para el ABM.
+
+### Cambiado
+
+- `GeneracionCargoLiquidacionService` valida y filtra con las categorías del período (`categoriasConPuntos(anho, mes)`) en lugar de la plantilla actual: un período histórico con puntos ya no se bloquea porque `categoria` cambió después. `findByLegajo` y `findByPeriodo` también filtran con los puntos del período.
+- `pom.xml`: versión del proyecto `0.3.0` → `0.4.0`.
+
+### Tests
+
+- `CargoEtecServiceTest.listaElCatalogoConLosPuntosDelPeriodo` y ajustes en `GeneracionCargoLiquidacionServiceTest` para el endpoint por período.
+
+### Documentación
+
+- `README.md`: fila del endpoint de catálogo por período y versión actual `0.4.0`.
+
 ## [0.3.0] - 2026-11-22
 
 Tercera versión: el circuito ETEC suma la pérdida de presentismo por asignación y
