@@ -4,6 +4,26 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.1] - 2026-11-23
+
+Parche: el control ETEC del período deja de reenviar los headers del upstream.
+
+### Corregido
+
+- `GET /api/haberes/etec/control/{anho}/{mes}/opcional` deja de devolver el `ResponseEntity` de Feign: `ControlEtecEtecService` extrae el cuerpo y el controller arma un `ResponseEntity.ok(...)` propio. Copiar los headers hop-by-hop de core (`Transfer-Encoding`, `Connection`, `Keep-Alive`) hacía que el gateway rechazara la respuesta con `500`. Se conserva el `200` sin cuerpo cuando el período todavía no tiene control.
+
+### Cambiado
+
+- `pom.xml`: versión del proyecto `0.4.0` → `0.4.1`.
+
+### Tests
+
+- `ControlEtecEtecServiceTest` y `ControlEtecEtecControllerTest`: verifican la extracción del cuerpo, el `200` sin cuerpo y que la respuesta no copia headers del upstream.
+
+### Documentación
+
+- `README.md`: versión actual `0.4.1`.
+
 ## [0.4.0] - 2026-11-23
 
 Cuarta versión: el catálogo y la generación ETEC resuelven los puntos del período.
