@@ -15,7 +15,7 @@ Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de dat
 las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
 liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.3.0` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.4.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -65,6 +65,7 @@ Todas las rutas cuelgan de `/api/haberes/etec`.
 | Método | Ruta | Descripción |
 | --- | --- | --- |
 | GET | `/cargo/` | Lista los cargos ETEC con puntos |
+| GET | `/cargo/{anho}/{mes}` | Lista los cargos ETEC con los puntos vigentes en el período |
 | GET | `/cargo/{categoriaId}` | Obtiene un cargo y valida que sea ETEC |
 | POST | `/cargo/{anho}/{mes}` | Crea un cargo |
 | PUT | `/cargo/{categoriaId}/{anho}/{mes}` | Actualiza nombre y puntos del cargo |
