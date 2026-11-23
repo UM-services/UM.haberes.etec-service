@@ -80,7 +80,7 @@ class GeneracionCargoLiquidacionServiceTest {
 
     @Test
     void delegaLaGeneracionDelPeriodoEnCore() {
-        when(categoriaClient.findConPuntos()).thenReturn(List.of(directoraEtec()));
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11)).thenReturn(List.of(directoraEtec()));
         when(controlEtecClient.findByPeriodoOpcional(2026, 11))
                 .thenReturn(ResponseEntity.ok(control("3000.00")));
         when(cargoLiquidacionClient.generarEtecByPeriodo(2026, 11)).thenReturn(List.of(cargoCalculado()));
@@ -95,7 +95,7 @@ class GeneracionCargoLiquidacionServiceTest {
 
     @Test
     void delegaLaGeneracionDelLegajoEnCore() {
-        when(categoriaClient.findConPuntos()).thenReturn(List.of(directoraEtec()));
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11)).thenReturn(List.of(directoraEtec()));
         when(controlEtecClient.findByPeriodoOpcional(2026, 11))
                 .thenReturn(ResponseEntity.ok(control("3000.00")));
         when(cargoLiquidacionClient.generarEtecByLegajo(1234L, 2026, 11)).thenReturn(List.of(cargoCalculado()));
@@ -108,7 +108,7 @@ class GeneracionCargoLiquidacionServiceTest {
 
     @Test
     void previewMapeaLaRespuestaDeCoreSinEscribir() {
-        when(categoriaClient.findConPuntos()).thenReturn(List.of(directoraEtec()));
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11)).thenReturn(List.of(directoraEtec()));
         when(controlEtecClient.findByPeriodoOpcional(2026, 11))
                 .thenReturn(ResponseEntity.ok(control("3000.00")));
         when(cargoLiquidacionClient.previewEtecByPeriodo(2026, 11)).thenReturn(List.of(cargoCalculado()));
@@ -125,7 +125,7 @@ class GeneracionCargoLiquidacionServiceTest {
 
     @Test
     void fallaSinValorDePunto() {
-        when(categoriaClient.findConPuntos()).thenReturn(List.of(directoraEtec()));
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11)).thenReturn(List.of(directoraEtec()));
         when(controlEtecClient.findByPeriodoOpcional(2026, 11))
                 .thenReturn(ResponseEntity.ok(control("0.00")));
 
@@ -135,7 +135,7 @@ class GeneracionCargoLiquidacionServiceTest {
 
     @Test
     void fallaSinCargosConPuntosConfigurados() {
-        when(categoriaClient.findConPuntos()).thenReturn(List.of());
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11)).thenReturn(List.of());
 
         assertThrows(EtecValidationException.class, () -> service.generar(2026, 11));
         verifyNoInteractions(cargoLiquidacionClient);

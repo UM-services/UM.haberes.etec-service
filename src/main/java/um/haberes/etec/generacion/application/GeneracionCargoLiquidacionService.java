@@ -57,7 +57,7 @@ public class GeneracionCargoLiquidacionService {
     }
 
     public List<CargoLiquidacionDto> findByLegajo(Long legajoId, Integer anho, Integer mes) {
-        Set<Integer> categoriaIds = categoriasConPuntos().keySet();
+        Set<Integer> categoriaIds = categoriasConPuntos(anho, mes).keySet();
         if (categoriaIds.isEmpty()) {
             return List.of();
         }
@@ -67,7 +67,7 @@ public class GeneracionCargoLiquidacionService {
     }
 
     public List<CargoLiquidacionDto> findByPeriodo(Integer anho, Integer mes) {
-        Set<Integer> categoriaIds = categoriasConPuntos().keySet();
+        Set<Integer> categoriaIds = categoriasConPuntos(anho, mes).keySet();
         if (categoriaIds.isEmpty()) {
             return List.of();
         }
@@ -77,7 +77,7 @@ public class GeneracionCargoLiquidacionService {
     }
 
     private void validarPeriodo(Integer anho, Integer mes) {
-        if (categoriasConPuntos().isEmpty()) {
+        if (categoriasConPuntos(anho, mes).isEmpty()) {
             throw new EtecValidationException("No hay cargos ETEC con puntos configurados");
         }
         ControlEtecDto control = controlEtecClient.findByPeriodoOpcional(anho, mes).getBody();
@@ -88,9 +88,9 @@ public class GeneracionCargoLiquidacionService {
         }
     }
 
-    private Map<Integer, CategoriaDto> categoriasConPuntos() {
+    private Map<Integer, CategoriaDto> categoriasConPuntos(Integer anho, Integer mes) {
         Map<Integer, CategoriaDto> categorias = new LinkedHashMap<>();
-        for (CategoriaDto categoria : categoriaClient.findConPuntos()) {
+        for (CategoriaDto categoria : categoriaClient.findConPuntosPorPeriodo(anho, mes)) {
             if (categoria.getCategoriaId() != null) {
                 categorias.putIfAbsent(categoria.getCategoriaId(), categoria);
             }

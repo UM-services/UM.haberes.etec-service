@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,6 +57,17 @@ class CargoEtecServiceTest {
         assertEquals(0, body.getLiquidaPorHora());
         assertEquals(BigDecimal.ZERO, body.getBasico());
         assertEquals(new BigDecimal("1000.00"), body.getPuntos());
+    }
+
+    @Test
+    void listaElCatalogoConLosPuntosDelPeriodo() {
+        when(categoriaClient.findConPuntosPorPeriodo(2026, 11))
+                .thenReturn(List.of(CategoriaDto.builder().categoriaId(9001).build()));
+
+        List<CategoriaDto> cargos = service.findAll(2026, 11);
+
+        assertEquals(1, cargos.size());
+        verify(categoriaClient).findConPuntosPorPeriodo(2026, 11);
     }
 
     @Test
