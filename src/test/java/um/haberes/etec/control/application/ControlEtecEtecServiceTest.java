@@ -30,12 +30,14 @@ class ControlEtecEtecServiceTest {
                 .anho(2026)
                 .mes(11)
                 .valorPuntoEtec(new BigDecimal("311.3633"))
+                .montoFijoCargo(new BigDecimal("50000.00"))
                 .build();
         when(client.findByPeriodoOpcional(2026, 11)).thenReturn(ResponseEntity.ok(control));
 
         ControlEtecDto resultado = service.findByPeriodoOpcional(2026, 11);
 
         assertThat(resultado).isSameAs(control);
+        assertThat(resultado.getMontoFijoCargo()).isEqualByComparingTo("50000.00");
     }
 
     @Test
