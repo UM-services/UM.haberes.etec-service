@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Parámetros propios del circuito ETEC por puntos. El valor del punto vive en
- * {@code control_etec} de haberes-core.
+ * Parámetros propios del circuito ETEC por puntos. El valor del punto y el monto fijo del
+ * cargo viven en {@code control_etec} de haberes-core.
  */
 @Getter
 @Setter
@@ -27,4 +27,7 @@ public class ControlEtecDto {
     private Integer mes;
 
     private BigDecimal valorPuntoEtec;
+
+    /** Importe fijo que se suma a {@code puntos × valorPuntoEtec} al liquidar el cargo. */
+    private BigDecimal montoFijoCargo;
 }

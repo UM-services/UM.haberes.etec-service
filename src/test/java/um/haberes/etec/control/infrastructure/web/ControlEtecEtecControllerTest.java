@@ -31,6 +31,7 @@ class ControlEtecEtecControllerTest {
                 .anho(2026)
                 .mes(11)
                 .valorPuntoEtec(new BigDecimal("311.3633"))
+                .montoFijoCargo(new BigDecimal("50000.00"))
                 .build();
         when(service.findByPeriodoOpcional(2026, 11)).thenReturn(control);
 
@@ -38,6 +39,7 @@ class ControlEtecEtecControllerTest {
 
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(respuesta.getBody()).isSameAs(control);
+        assertThat(respuesta.getBody().getMontoFijoCargo()).isEqualByComparingTo("50000.00");
         // Regresión: reenviar el ResponseEntity de Feign copiaba Transfer-Encoding/Connection
         // y el gateway devolvía 500.
         assertThat(respuesta.getHeaders().isEmpty()).isTrue();

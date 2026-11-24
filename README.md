@@ -15,7 +15,7 @@ Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de dat
 las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
 liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.4.1` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.5.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -48,9 +48,9 @@ Versión actual: `0.4.1` (ver [CHANGELOG.md](CHANGELOG.md)).
   (`tieneCargosHoras`), listado por período y CRUD con motivo, delegados en core de
   la misma forma que el presentismo por asignación.
 - **Control ETEC del período**: `GET /control/{anho}/{mes}/opcional` expone el
-  control que persiste core, con `200` sin cuerpo cuando el período todavía no está
-  configurado. La respuesta se arma en este servicio y no reenvía los headers del
-  upstream.
+  control que persiste core —`valorPuntoEtec` y `montoFijoCargo` del período—, con
+  `200` sin cuerpo cuando el período todavía no está configurado. La respuesta se
+  arma en este servicio y no reenvía los headers del upstream.
 - **Auditoría**: las llamadas Feign propagan `X-Usuario-Legajo` y
   `X-Legajo-Solicitante` para que core registre el actor en las escrituras.
 - **Errores**: `ProblemDetail` con `400` de validación, `409` de conflicto y el status
@@ -122,7 +122,7 @@ Todas las rutas cuelgan de `/api/haberes/etec`.
 
 | Método | Ruta | Descripción |
 | --- | --- | --- |
-| GET | `/control/{anho}/{mes}/opcional` | Control ETEC del período; `200` sin cuerpo si no está configurado |
+| GET | `/control/{anho}/{mes}/opcional` | Control ETEC del período (`valorPuntoEtec` y `montoFijoCargo`); `200` sin cuerpo si no está configurado |
 
 ## Requisitos
 
