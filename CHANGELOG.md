@@ -4,6 +4,26 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.5.0] - 2026-11-24
+
+Quinta versión: el control ETEC del período expone el monto fijo del cargo.
+
+### Agregado
+
+- `ControlEtecDto` incorpora `montoFijoCargo`, el importe que `haberes-core-service` suma a `puntos × valorPuntoEtec` al liquidar el cargo. `GET /api/haberes/etec/control/{anho}/{mes}/opcional` lo devuelve junto con `valorPuntoEtec`.
+
+### Cambiado
+
+- `pom.xml`: versión del proyecto `0.4.1` → `0.5.0`.
+
+### Tests
+
+- `ControlEtecEtecServiceTest` y `ControlEtecEtecControllerTest`: verifican que `montoFijoCargo` llega al response del control ETEC.
+
+### Documentación
+
+- `README.md`: versión actual `0.5.0`; el control ETEC documenta `valorPuntoEtec` y `montoFijoCargo`.
+
 ## [0.4.1] - 2026-11-23
 
 Parche: el control ETEC del período deja de reenviar los headers del upstream.
