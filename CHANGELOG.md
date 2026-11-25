@@ -4,6 +4,24 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.6.0] - 2026-11-25
+
+Sexta versión: las llamadas Feign hacia `haberes-core-service` propagan el token
+de servicio cuando core exige autenticación entre servicios.
+
+### Agregado
+
+- `FeignServiceTokenConfig` (`shared/security`): interceptor de request de Feign que agrega `Authorization: Bearer <token>` a las llamadas a core con el valor de la variable de entorno `HABERES_SERVICE_TOKEN` (el mismo que core declara en `HABERES_SERVICE_TOKENS` como `etec:<token>`). Si la cabecera ya viene en el template o el token no está configurado, no la modifica; sin token el servicio se comporta como antes.
+
+### Cambiado
+
+- `pom.xml`: versión del proyecto `0.5.0` → `0.6.0`.
+
+### Documentación
+
+- `README.md`: versión actual `0.6.0`; documenta la configuración de `HABERES_SERVICE_TOKEN` y la propagación del token en las llamadas Feign.
+- `docs/diagrams/arquitectura-general.mmd`: el nodo de interceptores Feign incluye `FeignServiceTokenConfig` junto con `FeignAuditActorConfig`.
+
 ## [0.5.0] - 2026-11-24
 
 Quinta versión: el control ETEC del período expone el monto fijo del cargo.

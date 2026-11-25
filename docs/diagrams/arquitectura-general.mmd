@@ -7,7 +7,7 @@ flowchart LR
         WEB["Controllers<br/>cargo · asignacion-cargo · cargo-liquidacion<br/>presentismo · presentismo-horas · control"]
         APP["Services<br/>validaciones ETEC<br/>delegación en core"]
         ERR["EtecExceptionHandler<br/>ProblemDetail 400 / 409"]
-        AUDIT["FeignAuditActorConfig<br/>X-Usuario-Legajo"]
+        AUDIT["FeignAuditActorConfig · X-Usuario-Legajo<br/>FeignServiceTokenConfig · Authorization Bearer"]
         FEIGN["Clientes Feign<br/>coreCategoria · coreControlEtec · coreEtecAsignacionCargo<br/>coreCargoLiquidacion · coreEtecPresentismo<br/>coreEtecPresentismoHoras"]
     end
 
