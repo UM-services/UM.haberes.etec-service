@@ -4,6 +4,31 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.7.0] - 2026-11-25
+
+Séptima versión: la asignación de cargo transporta las horas del cargo y las veces
+del básico de maestro de grado, y el control ETEC del período expone los parámetros
+necesarios para calcularlos.
+
+### Agregado
+
+- `AsignacionCargoRequest` (`asignacion_cargo/infrastructure/web/dto`) acepta `horasCargo` y `vecesBasicoMaestroGrado` como `BigDecimal` opcionales, tanto en el alta como en la edición de la asignación.
+- `EtecAsignacionCargoRequestDto` y `EtecAsignacionCargoDto` (`client/core/dto`) incorporan `horasCargo` y `vecesBasicoMaestroGrado` para enviar y recibir esos valores hacia `haberes-core-service`.
+- `ControlEtecDto` incorpora `horasReferenciaCargo` (horas de referencia de los cargos por puntos del período) y `basicoMaestroGrado` (básico del maestro de grado del período), que devuelve `GET /api/haberes/etec/control/{anho}/{mes}/opcional`.
+
+### Cambiado
+
+- `AsignacionCargoService.toClientRequest` propaga `horasCargo` y `vecesBasicoMaestroGrado` al DTO de core en el alta y en la edición; no se agregaron validaciones nuevas, core sigue siendo el dueño de las reglas de esos campos.
+- `pom.xml`: versión del proyecto `0.6.0` → `0.7.0`.
+
+### Tests
+
+- `AsignacionCargoServiceTest`: nuevo `enviaLasHorasYLasVecesDelCargoAlCore`, que captura el request enviado a core y verifica ambos valores.
+
+### Documentación
+
+- `README.md`: versión actual `0.7.0`; documenta los campos de horas y veces del básico en la asignación y los nuevos parámetros del control ETEC.
+
 ## [0.6.0] - 2026-11-25
 
 Sexta versión: las llamadas Feign hacia `haberes-core-service` propagan el token

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +25,7 @@ import um.haberes.etec.cargo.application.CargoEtecService;
 import um.haberes.etec.client.core.CoreEtecAsignacionCargoClient;
 import um.haberes.etec.client.core.dto.CategoriaDto;
 import um.haberes.etec.client.core.dto.EtecAsignacionCargoDto;
+import um.haberes.etec.client.core.dto.EtecAsignacionCargoRequestDto;
 import um.haberes.etec.shared.exception.EtecConflictException;
 import um.haberes.etec.shared.exception.EtecValidationException;
 
@@ -117,5 +119,27 @@ class AsignacionCargoServiceTest {
 
         assertEquals(1L, result.getAsignacionCargoId());
         verify(client).update(any(), eq(1L));
+    }
+
+    @Test
+    void enviaLasHorasYLasVecesDelCargoAlCore() {
+        categoriaValida();
+        when(client.findByLegajo(1234L)).thenReturn(List.of());
+        when(client.add(any())).thenReturn(EtecAsignacionCargoDto.builder().asignacionCargoId(3L).build());
+
+        service.create(AsignacionCargoRequest.builder()
+                .legajoId(1234L)
+                .categoriaId(9001)
+                .dependenciaId(1)
+                .fechaAlta(date(15))
+                .horasCargo(new BigDecimal("18.00"))
+                .vecesBasicoMaestroGrado(new BigDecimal("1.50"))
+                .build());
+
+        ArgumentCaptor<EtecAsignacionCargoRequestDto> captor =
+                ArgumentCaptor.forClass(EtecAsignacionCargoRequestDto.class);
+        verify(client).add(captor.capture());
+        assertEquals(0, captor.getValue().getHorasCargo().compareTo(new BigDecimal("18.00")));
+        assertEquals(0, captor.getValue().getVecesBasicoMaestroGrado().compareTo(new BigDecimal("1.50")));
     }
 }
