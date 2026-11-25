@@ -15,7 +15,7 @@ Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de dat
 las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
 liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.5.0` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.6.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -53,6 +53,10 @@ Versión actual: `0.5.0` (ver [CHANGELOG.md](CHANGELOG.md)).
   arma en este servicio y no reenvía los headers del upstream.
 - **Auditoría**: las llamadas Feign propagan `X-Usuario-Legajo` y
   `X-Legajo-Solicitante` para que core registre el actor en las escrituras.
+- **Autenticación de servicio**: las llamadas Feign agregan
+  `Authorization: Bearer` con el token de `HABERES_SERVICE_TOKEN` cuando core exige
+  autenticación entre servicios. Si la variable no está configurada, no se agrega la
+  cabecera y el servicio se comporta como antes.
 - **Errores**: `ProblemDetail` con `400` de validación, `409` de conflicto y el status
   devuelto por core (`FeignException`); si core responde un cuerpo JSON, se usa
   `detail`, `message` o `error` como detalle.
@@ -141,6 +145,10 @@ Consul (`consul-service:8500`) y resuelve `haberes-core-service` por service dis
 - Health: `/actuator/health`
 - Readiness: `/actuator/health/readiness`
 - Swagger UI: `/swagger-ui.html`
+
+Para autenticarse contra core, configurá `HABERES_SERVICE_TOKEN` con el mismo valor
+que core declara en `HABERES_SERVICE_TOKENS` como `etec:<token>`. Si core no exige
+token, la variable puede quedar vacía.
 
 ## Build
 
