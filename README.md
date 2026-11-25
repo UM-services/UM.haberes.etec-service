@@ -15,7 +15,7 @@ Microservicio Spring Boot del sistema de haberes (ETEC). No accede a base de dat
 las validaciones de negocio viven acá y la persistencia —incluido el cálculo de la
 liquidación— la resuelve `haberes-core-service` a través de OpenFeign.
 
-Versión actual: `0.6.0` (ver [CHANGELOG.md](CHANGELOG.md)).
+Versión actual: `0.7.0` (ver [CHANGELOG.md](CHANGELOG.md)).
 
 ## Stack
 
@@ -32,7 +32,9 @@ Versión actual: `0.6.0` (ver [CHANGELOG.md](CHANGELOG.md)).
   monto fijo`.
 - **Asignación de cargos**: vínculo legajo–cargo con fecha de alta/baja. Valida que el
   cargo sea ETEC, que las fechas sean coherentes y que no haya solape con otra
-  asignación vigente del mismo cargo.
+  asignación vigente del mismo cargo. El alta y la edición aceptan `horasCargo` y
+  `vecesBasicoMaestroGrado` (`BigDecimal` opcionales), que se envían a core sin
+  validaciones adicionales acá.
 - **Liquidación de cargos por puntos**: `preview` y generación de `cargo_liquidacion`
   por período o por legajo delegan en `haberes-core-service`, que aplica
   `categoriaBasico = puntos × valor del punto + monto fijo` con los parámetros de
@@ -48,9 +50,10 @@ Versión actual: `0.6.0` (ver [CHANGELOG.md](CHANGELOG.md)).
   (`tieneCargosHoras`), listado por período y CRUD con motivo, delegados en core de
   la misma forma que el presentismo por asignación.
 - **Control ETEC del período**: `GET /control/{anho}/{mes}/opcional` expone el
-  control que persiste core —`valorPuntoEtec` y `montoFijoCargo` del período—, con
-  `200` sin cuerpo cuando el período todavía no está configurado. La respuesta se
-  arma en este servicio y no reenvía los headers del upstream.
+  control que persiste core —`valorPuntoEtec`, `montoFijoCargo`,
+  `horasReferenciaCargo` y `basicoMaestroGrado` del período—, con `200` sin cuerpo
+  cuando el período todavía no está configurado. La respuesta se arma en este
+  servicio y no reenvía los headers del upstream.
 - **Auditoría**: las llamadas Feign propagan `X-Usuario-Legajo` y
   `X-Legajo-Solicitante` para que core registre el actor en las escrituras.
 - **Autenticación de servicio**: las llamadas Feign agregan
@@ -126,7 +129,7 @@ Todas las rutas cuelgan de `/api/haberes/etec`.
 
 | Método | Ruta | Descripción |
 | --- | --- | --- |
-| GET | `/control/{anho}/{mes}/opcional` | Control ETEC del período (`valorPuntoEtec` y `montoFijoCargo`); `200` sin cuerpo si no está configurado |
+| GET | `/control/{anho}/{mes}/opcional` | Control ETEC del período (`valorPuntoEtec`, `montoFijoCargo`, `horasReferenciaCargo` y `basicoMaestroGrado`); `200` sin cuerpo si no está configurado |
 
 ## Requisitos
 
