@@ -30,4 +30,10 @@ public class ControlEtecDto {
 
     /** Importe fijo que se suma a {@code puntos × valorPuntoEtec} al liquidar el cargo. */
     private BigDecimal montoFijoCargo;
+
+    /** Horas de referencia de los cargos por puntos del período. */
+    private BigDecimal horasReferenciaCargo;
+
+    /** Básico del maestro de grado del período. */
+    private BigDecimal basicoMaestroGrado;
 }

@@ -98,6 +98,8 @@ public class AsignacionCargoService {
         return EtecAsignacionCargoRequestDto.builder()
                 .legajoId(request.getLegajoId())
                 .categoriaId(request.getCategoriaId())
+                .horasCargo(request.getHorasCargo())
+                .vecesBasicoMaestroGrado(request.getVecesBasicoMaestroGrado())
                 .dependenciaId(request.getDependenciaId())
                 .fechaAlta(request.getFechaAlta())
                 .fechaBaja(request.getFechaBaja())
