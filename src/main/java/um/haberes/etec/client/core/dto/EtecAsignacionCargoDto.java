@@ -1,5 +1,6 @@
 package um.haberes.etec.client.core.dto;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,6 +25,10 @@ public class EtecAsignacionCargoDto {
     private Long legajoId;
 
     private Integer categoriaId;
+
+    private BigDecimal horasCargo;
+
+    private BigDecimal vecesBasicoMaestroGrado;
 
     private Integer dependenciaId;
 
